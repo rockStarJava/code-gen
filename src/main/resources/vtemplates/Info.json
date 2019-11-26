@@ -1,0 +1,81 @@
+{
+  "url": "http://localhost:8080/sampleapp/api/v1/employees/",
+  "methods": [
+    {
+      "name": "getall",
+      "operation": "get",
+      "pathParm": false,
+      "status": 200,
+      "validate": [
+       
+        {
+          "bodyField": "firstName",
+          "type" : "stringArray",
+          "value": "Alex,Lokesh,David"
+        },
+        {
+          "bodyField": "id",
+          "type" : "numberArray",
+          "value": "1,2,3"
+        }
+      ]
+    },
+    {
+      "name": "getone",
+      "operation": "get",
+      "pathParm": true,
+      "url": "http://localhost:8080/sampleapp/api/v1/employees/{id}",
+      "pathparams": [
+        {
+          "paramName": "id",
+          "type" : "number",
+          "value": 1
+        }
+      ],
+      "status": 200,
+      "validate": [
+        {
+          "bodyField": "id",
+          "type" : "number",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "name": "postSucess",
+      "operation": "post",
+      "pathParm": false,
+      "body": {
+        "firstName": "Alex",
+        "lastName": "newton",
+        "email": "anew@gmail.com"
+      },
+      "status": 201,
+      "validate": [
+        {
+          "bodyField": "id",
+          "type" : "number",
+          "value": 1
+        }
+      ]
+    },
+    {
+      "name": "postSucess2",
+      "operation": "post",
+      "pathParm": false,
+      "body": {
+        "firstName": "Sam",
+        "lastName": "Pentram",
+        "email": "sptram@gmail.com"
+      },
+      "status": 201,
+      "validate": [
+        {
+          "bodyField": "id",
+          "type" : "number",
+          "value": 1
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,102 @@
+package ${packagename};
+
+import static io.restassured.RestAssured.get;
+import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.when;
+import static io.restassured.RestAssured.with;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.lessThan;
+
+import org.json.JSONObject;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
+public class ${className}{
+	private static String url;
+	
+	@BeforeClass
+	public static void before() throws Exception {
+		System.out.println("Setting up!");
+
+		url = "${specs.url}";
+	}
+
+	#set($getoperation = "get")
+    #set($postoperation = "post")
+    #set($number = "number")
+    #set($string = "string")
+    #set($array = "array")
+    #set($stringArray = "stringArray")
+    #set($numberArray = "numberArray")
+    #set($boolean = "boolean")
+    
+    #foreach($method in $specs.methods)
+		 #if($method.operation == $getoperation)
+			  @Test
+             public void $method.getName()Test(){ 
+			  #if(${method.pathParm})
+					 given()
+					 #foreach ($pathparams in $method.getPathparams())
+					  #if($pathparams.type == $number)
+					   .pathParam("$pathparams.paramName", $pathparams.value)
+					  #end
+					  #if($pathparams.type == $string)
+					   .pathParam("$pathparams.paramName", "$pathparams.value")
+					  #end
+					#end
+					.when().get("$method.getUrl()").then().log().body().assertThat()
+					 #foreach ($validate in $method.getValidate())	
+					          #if($validate.type==$number)
+							  .body("$validate.bodyField", equalTo($validate.value))
+							  #end
+							  #if($validate.type == $string)
+							  .body("$validate.bodyField", equalTo("$validate.value"))
+							  #end
+							   #if($validate.type == $stringArray)
+							  .body("$validate.bodyField", equalTo("$validate.value"))
+							  #end
+							   #if($validate.type == $numberArray)
+							  .body("$validate.bodyField", equalTo($validate.value))
+							  #end
+							
+					 #end
+					 .statusCode( $method.getStatus() );	
+			 
+			  #else
+				   get(url).then().log().body().assertThat()
+				    #foreach ($validate in $method.getValidate())	
+				              #if($validate.type == $stringArray)
+							  .body("$validate.bodyField", hasItems("$validate.value"))
+							  #end
+							   #if($validate.type == $numberArray)
+							  .body("$validate.bodyField", hasItems($validate.value))
+							  #end
+				             #if($validate.type==$number)
+							.body("$validate.bodyField", hasItems($validate.value))
+							#end
+							 #if($validate.type == $string)
+							  .body("$validate.bodyField", hasItems("$validate.value"))
+							  #end
+					 #end
+					 .statusCode( $method.getStatus() );
+			  #end
+			 }
+		 #end
+ 
+		#if($method.operation==$postoperation)
+			 @Test
+			 public void $method.getName()Test() throws JSONException {
+			        JSONObject sampleJson = new JSONObject();
+			        #foreach ($key in $method.getBody().getProperties().keySet())
+			        sampleJson.put("$key","$method.getBody().getProperties()[$key]");
+                    #end
+		
+			 
+					with().body(sampleJson.toString()).contentType("application/json").when().request("POST", url).then().log()
+						.body().assertThat().statusCode($method.getStatus());
+
+			 }
+		#end
+	#end
+}

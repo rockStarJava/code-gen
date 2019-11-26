@@ -1,0 +1,21 @@
+package ${packagename};
+
+public ${className} implements Serializable {
+
+ /** Serial Version UID. */
+ private static final long serialVersionUID = 1L;
+
+#foreach( $property in $properties )
+ private $property.fieldType $property.fieldName;
+#end 
+ 
+#foreach( $property in $properties )
+ public ${property.fieldType} get${property.getGetterAndSetterField()}() {
+     return this.${property.fieldName};
+ }
+ 
+ public void set${property.getGetterAndSetterField()}(${property.fieldType} ${property.fieldName}) {
+     this.${property.fieldName} = ${property.fieldName};
+ } 
+#end
+}
