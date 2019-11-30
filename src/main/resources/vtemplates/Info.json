@@ -1,5 +1,7 @@
 {
   "url": "http://localhost:8080/sampleapp/api/v1/employees/",
+  "name": "EmployeeApiTester",
+  "packageName": "org.api.test",
   "methods": [
     {
       "name": "getall",
@@ -7,16 +9,15 @@
       "pathParm": false,
       "status": 200,
       "validate": [
-       
         {
           "bodyField": "firstName",
-          "type" : "stringArray",
-          "value": "Alex,Lokesh,David"
+          "type": "stringArray",
+          "value": "Alex,Lokesh,David,vikasini"
         },
         {
           "bodyField": "id",
-          "type" : "numberArray",
-          "value": "1,2,3"
+          "type": "numberArray",
+          "value": "1,2,3,4"
         }
       ]
     },
@@ -28,7 +29,7 @@
       "pathparams": [
         {
           "paramName": "id",
-          "type" : "number",
+          "type": "number",
           "value": 1
         }
       ],
@@ -36,8 +37,34 @@
       "validate": [
         {
           "bodyField": "id",
-          "type" : "number",
+          "type": "number",
           "value": 1
+        }
+      ]
+    },
+    {
+      "name": "getonetest1",
+      "operation": "get",
+      "pathParm": true,
+      "url": "http://localhost:8080/sampleapp/api/v1/employees/{id}",
+      "pathparams": [
+        {
+          "paramName": "id",
+          "type": "number",
+          "value": 4
+        }
+      ],
+      "status": 200,
+      "validate": [
+        {
+          "bodyField": "id",
+          "type": "number",
+          "value": 4
+        },
+        {
+          "bodyField": "firstName",
+          "type": "string",
+          "value": "vikasini"
         }
       ]
     },
@@ -50,14 +77,7 @@
         "lastName": "newton",
         "email": "anew@gmail.com"
       },
-      "status": 201,
-      "validate": [
-        {
-          "bodyField": "id",
-          "type" : "number",
-          "value": 1
-        }
-      ]
+      "status": 201
     },
     {
       "name": "postSucess2",
@@ -72,7 +92,7 @@
       "validate": [
         {
           "bodyField": "id",
-          "type" : "number",
+          "type": "number",
           "value": 1
         }
       ]

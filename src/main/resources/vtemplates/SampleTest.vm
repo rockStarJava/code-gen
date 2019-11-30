@@ -2,12 +2,11 @@ package ${packagename};
 
 import static io.restassured.RestAssured.get;
 import static io.restassured.RestAssured.given;
-import static io.restassured.RestAssured.when;
 import static io.restassured.RestAssured.with;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItems;
-import static org.hamcrest.Matchers.lessThan;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -91,10 +90,23 @@ public class ${className}{
 			        #foreach ($key in $method.getBody().getProperties().keySet())
 			        sampleJson.put("$key","$method.getBody().getProperties()[$key]");
                     #end
-		
-			 
 					with().body(sampleJson.toString()).contentType("application/json").when().request("POST", url).then().log()
-						.body().assertThat().statusCode($method.getStatus());
+						.body().assertThat()
+                      #foreach ($validate in $method.getValidate())	
+				              #if($validate.type == $stringArray)
+							  .body("$validate.bodyField", hasItems("$validate.value"))
+							  #end
+							   #if($validate.type == $numberArray)
+							  .body("$validate.bodyField", hasItems($validate.value))
+							  #end
+				             #if($validate.type==$number)
+							.body("$validate.bodyField", hasItems($validate.value))
+							#end
+							 #if($validate.type == $string)
+							  .body("$validate.bodyField", hasItems("$validate.value"))
+							  #end
+					 #end
+                    .statusCode($method.getStatus());
 
 			 }
 		#end
